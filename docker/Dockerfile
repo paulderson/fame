@@ -1,14 +1,17 @@
 
-FROM debian:stretch
+FROM ubuntu:focal
 
 WORKDIR /opt
 
 RUN apt-get update && \
-  apt-get upgrade -y && \
-  DEBIAN_FRONTEND=noninteractive apt-get install -y \
+  apt-get upgrade -y
+
+RUN apt-get install -y \
+  python3-dev \
+  python3-pip
+
+RUN apt-get install -y \
   git \
-  python-dev \
-  python-pip \
   screen \
   p7zip-full \
   libjpeg-dev \
@@ -17,29 +20,27 @@ RUN apt-get update && \
   ca-certificates \
   curl \
   gnupg2 \
-  software-properties-common
+  software-properties-common \
+  wget \
+  nano
 
-RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 \
-   --recv 9DA31620334BD75D9DCB49F368818C72E52529D4
-RUN echo "deb http://repo.mongodb.org/apt/debian stretch/mongodb-org/4.0 main" | tee /etc/apt/sources.list.d/mongodb-org-4.0.list
+RUN wget -qO - https://www.mongodb.org/static/pgp/server-4.4.asc | apt-key add -
 
-RUN curl -fsSL https://download.docker.com/linux/debian/gpg | apt-key add - && \
-    add-apt-repository \
-    "deb [arch=amd64] https://download.docker.com/linux/debian \
-    $(lsb_release -cs) \
-    stable"
+# Ubuntu
+RUN echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu focal/mongodb-org/4.4 multiverse" | tee /etc/apt/sources.list.d/mongodb-org-4.4.list
 
+RUN apt-get update && apt-get install -y \
+    mongodb-org
+
+RUN curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
+RUN add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu focal stable"
 RUN apt-get update && apt-get install -y \
     docker-ce \
     docker-ce-cli \
     containerd.io
 
-RUN apt-get update && apt-get install -y \
-    mongodb-org
-
-
-RUN pip install virtualenv && \
-    git clone https://github.com/certsocietegenerale/fame
+RUN pip3 install virtualenv && \
+    git clone https://github.com/paulderson/fame.git
 
 ENTRYPOINT ["/opt/fame/docker/launch.sh"]
 EXPOSE 4200
