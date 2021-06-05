@@ -29,8 +29,10 @@ RUN apt-get install -y \
   wget \
   nano
 
-# RUN apt-get install -y \
-#  software-properties-common \
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends tzdata
+
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -y \
+  software-properties-common
 
 RUN wget -qO - https://www.mongodb.org/static/pgp/server-4.4.asc | apt-key add -
 
