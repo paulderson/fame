@@ -15,14 +15,22 @@ RUN apt-get install -y \
   screen \
   p7zip-full \
   libjpeg-dev \
-  zlib1g-dev \
+  zlib1g-dev
+
+RUN apt-get install -y \
   apt-transport-https \
-  ca-certificates \
+  ca-certificates
+
+RUN apt-get install -y \
   curl \
-  gnupg2 \
-  software-properties-common \
+  gnupg2
+
+RUN apt-get install -y \
   wget \
   nano
+
+# RUN apt-get install -y \
+#  software-properties-common \
 
 RUN wget -qO - https://www.mongodb.org/static/pgp/server-4.4.asc | apt-key add -
 
